@@ -1,5 +1,6 @@
-# TailorNet
-Official repository of "TailorNet: Predicting Clothing in 3D as a Function of Human Pose, Shape and Garment Style" (CVPR 2020 Oral)  
+# TailorNet Dataset
+This repository is a toolbox to process, visualize the dataset for "TailorNet: Predicting Clothing in 3D as a Function of Human Pose, Shape and Garment Style" (CVPR 2020 Oral)  
+
 [[arxiv](https://arxiv.org/abs/2003.04583)][[project website](https://virtualhumans.mpi-inf.mpg.de/tailornet/)][[Youtube](https://www.youtube.com/watch?v=F0O21a_fsBQ)]
 
 ## Requirements
@@ -52,8 +53,14 @@ python setup.py build_ext -i
 python visualize_dataset.py
 ```
 
-## Training
-Coming soon
+## TODO
+- [ ] Dataset generation codes
+- [ ] Style space visualizer
+- [ ] Blender visualizer
+- [ ] Google Drive/BaiduYun
+- [ ] Shirt, pants, skirt
+- [x] T-shirt
+- [x] Basic visualizer
 
 ## Citation
 Cite us:
