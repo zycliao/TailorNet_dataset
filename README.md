@@ -1,7 +1,7 @@
 # TailorNet Dataset
 This repository is a toolbox to process, visualize the dataset for "TailorNet: Predicting Clothing in 3D as a Function of Human Pose, Shape and Garment Style" (CVPR 2020 Oral)  
 
-[[arxiv](https://arxiv.org/abs/2003.04583)][[project website](https://virtualhumans.mpi-inf.mpg.de/tailornet/)][[Youtube](https://www.youtube.com/watch?v=F0O21a_fsBQ)]
+[[model repository](https://github.com/chaitanya100100/TailorNet)][[arxiv](https://arxiv.org/abs/2003.04583)][[project website](https://virtualhumans.mpi-inf.mpg.de/tailornet/)][[YouTube](https://www.youtube.com/watch?v=F0O21a_fsBQ)]
 
 ## Requirements
 python3  
@@ -19,12 +19,28 @@ cython
 1. Download meta data of the dataset  
 [dataset_meta](https://datasets.d2.mpi-inf.mpg.de/tailornet/dataset_meta.zip)
 2. Download one or more sub-dataset (other garment classes are coming soon)   
-[t-shirt_female](https://datasets.d2.mpi-inf.mpg.de/tailornet/t-shirt_female.zip)\(6.6G\)  
-[t-shirt_male](https://datasets.d2.mpi-inf.mpg.de/tailornet/t-shirt_male.zip)\(6.9G\)  
+[t-shirt_female](https://datasets.d2.mpi-inf.mpg.de/tailornet/t-shirt_female.zip)\(6.8G\)  
+[t-shirt_male](https://datasets.d2.mpi-inf.mpg.de/tailornet/t-shirt_male.zxip)\(6.9G\)  
+[old-t-shirt_female](https://datasets.d2.mpi-inf.mpg.de/tailornet/old-t-shirt_female.zip)\(10G\)  
 [t-shirt_female_sample](https://datasets.d2.mpi-inf.mpg.de/tailornet/t-shirt_female_sample.zip)\(19M\)
 3. Specify the variable `DATA_DIR` in `global_var.py`  
 4. Unzip all downloaded files to `DATA_DIR`  
-5. The dataset structure looks like this:
+
+## Dataset description
+Currently, we have 5 garment classes (t-shirt, shirt, pant, skirt, old-t-shirt). 
+In TailorNet paper, we trained and tested our model using `old-t-shirt`. 
+Compared to `old-t-shirt`, `t-shirt` has a different topology, higher quality and larger style variation. 
+Use `old-t-shirt` if you want a fair comparison with the results in our paper.  
+
+In each (garment_class, gender) sub-dataset, all feasible (shape, style) combinations are in `avail.txt`.
+All of them are simulated in A-pose and the results are in `style_shape/`.
+Shape and style parameters can be accessed in `shape/` and `style/`.
+
+Pivot (shape, style)s are recorded in `pivots.txt` and test (shape, style)s are in `test.txt`.
+Each of them is simulated in multiple poses and the results are in `pose/{shape}_{style}`.
+
+   
+The dataset structure looks like this:
 ```
 DATA_DIR
 ----smpl
@@ -36,7 +52,8 @@ DATA_DIR
 --------style_shape
 --------avail.txt
 --------pivots.txt
-----apose.pkl
+--------test.txt
+----apose.npy
 ----garment_class_info.pkl
 ----split_static_pose_shape.npz
 ```
