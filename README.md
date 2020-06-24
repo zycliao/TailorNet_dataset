@@ -20,7 +20,7 @@ cython
 [dataset_meta](https://datasets.d2.mpi-inf.mpg.de/tailornet/dataset_meta.zip)
 2. Download one or more sub-dataset (other garment classes are coming soon)   
 [t-shirt_female](https://datasets.d2.mpi-inf.mpg.de/tailornet/t-shirt_female.zip)\(6.8G\)  
-[t-shirt_male](https://datasets.d2.mpi-inf.mpg.de/tailornet/t-shirt_male.zxip)\(6.9G\)  
+[t-shirt_male](https://datasets.d2.mpi-inf.mpg.de/tailornet/t-shirt_male.zip)\(6.9G\)  
 [old-t-shirt_female](https://datasets.d2.mpi-inf.mpg.de/tailornet/old-t-shirt_female.zip)\(10G\)  
 [t-shirt_female_sample](https://datasets.d2.mpi-inf.mpg.de/tailornet/t-shirt_female_sample.zip)\(19M\)
 3. Specify the variable `DATA_DIR` in `global_var.py`  
