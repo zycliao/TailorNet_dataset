@@ -26,7 +26,7 @@ cython
 3. Specify the variable `DATA_DIR` in `global_var.py`  
 4. Unzip all downloaded files to `DATA_DIR`  
 
-## Dataset description
+## Dataset Description
 Currently, we have 5 garment classes (t-shirt, shirt, pant, skirt, old-t-shirt). 
 In TailorNet paper, we trained and tested our model using `old-t-shirt`. 
 Compared to `old-t-shirt`, `t-shirt` has a different topology, higher quality and larger style variation. 
@@ -57,8 +57,10 @@ We provide `apose.npy`, `garment_class_info.pkl` and `split_static_pose_shape.np
 - `split_static_pose_shape.npz` contains a dictionary `{'train': <train_idx>, 'test': <test_idx>}` where `<train_idx>` and `<test_idx>` are np arrays specifying the indices of poses which goes into train and test set respectively.
 - `garment_class_info.pkl` contains a dictionary `{<garment_class>: {'f': <f>, 'vert_indices': <vert_indices>} }` where `<vert_indices>` denotes the vertex indices of high resolution SMPL body template which defines the garment topology of `<garment_class>`, and `<f>` denotes the faces of template garment mesh.
 - `apose.npy` contains the thetas for A-pose on which garment style space is modeled.
+
 - For each `<garment_class>_<gender>`,
   - `shape` directory contains uniformally chosen shape(beta) parameters.
+  
   - `style_model.npz` contains a dictionary with these variables: `<pca_w>`, `mean`, `coeff_mean`, `coeff_range`. For given style `gamma`, garment vertices can be obtained using the following equation:
     - `pca_w * (gamma + coeff_mean) + mean`
   - `style` directory contains uniformally chosen style(gamma) parameters.
