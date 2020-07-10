@@ -61,7 +61,7 @@ We provide `apose.npy`, `garment_class_info.pkl` and `split_static_pose_shape.np
 - For each `<garment_class>_<gender>`,
   - `shape` directory contains uniformally chosen shape(beta) parameters.
   
-  - `style_model.npz` contains a dictionary with these variables: `<pca_w>`, `mean`, `coeff_mean`, `coeff_range`. For given style `gamma`, garment vertices can be obtained using the following equation:
+  - `style_model.npz` contains a dictionary with these variables: `pca_w`, `mean`, `coeff_mean`, `coeff_range`. For given style `gamma`, garment vertices can be obtained using the following equation:
     - `pca_w * (gamma + coeff_mean) + mean`
   - `style` directory contains uniformally chosen style(gamma) parameters.
   - All styles are simulated on all shapes in A-pose and results are stored in `style_shape` directory. Out of those, shape_style pairs (also called pivots) with feasible simulation results are listed in `avail.txt`.
