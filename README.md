@@ -36,25 +36,27 @@ The dataset structure looks like this:
 ```
 DATA_DIR
 ----smpl
+----apose.npy
+----garment_class_info.pkl
+----split_static_pose_shape.npz
+
 ----<garment_class>_<gender> (e.g., t-shirt_female)
---------pose
+--------pose/
 ------------<shape_idx>_<style_idx> (e.g., 000_023)
---------shape
---------style
---------style_shape
+--------shape/
+--------style/
+--------style_shape/
 --------avail.txt
 --------pivots.txt
 --------test.txt
 --------style_model.npz
-----apose.npy
-----garment_class_info.pkl
-----split_static_pose_shape.npz
 ```
+
+We provide `apose.npy`, `garment_class_info.pkl` and `split_static_pose_shape.npz` separately in `dataset_meta.zip`, and each `<garment_class>_<gender>` in a separate zip file.
 
 - `split_static_pose_shape.npz` contains a dictionary `{'train': <train_idx>, 'test': <test_idx>}` where `<train_idx>` and `<test_idx>` are np arrays specifying the indices of poses which goes into train and test set respectively.
 - `garment_class_info.pkl` contains a dictionary `{<garment_class>: {'f': <f>, 'vert_indices': <vert_indices>} }` where `<vert_indices>` denotes the vertex indices of high resolution SMPL body template which defines the garment topology of `<garment_class>`, and `<f>` denotes the faces of template garment mesh.
 - `apose.npy` contains the thetas for A-pose on which garment style space is modeled.
-
 - For each `<garment_class>_<gender>`,
   - `shape` directory contains uniformally chosen shape(beta) parameters.
   - `style_model.npz` contains a dictionary with these variables: `<pca_w>`, `mean`, `coeff_mean`, `coeff_range`. For given style `gamma`, garment vertices can be obtained using the following equation:
