@@ -31,33 +31,39 @@ Currently, we have 5 garment classes (t-shirt, shirt, pant, skirt, old-t-shirt).
 In TailorNet paper, we trained and tested our model using `old-t-shirt`. 
 Compared to `old-t-shirt`, `t-shirt` has a different topology, higher quality and larger style variation. 
 Use `old-t-shirt` if you want a fair comparison with the results in our paper.  
-
-In each (garment_class, gender) sub-dataset, all feasible (shape, style) combinations are in `avail.txt`.
-All of them are simulated in A-pose and the results are in `style_shape/`.
-Shape and style parameters can be accessed in `shape/` and `style/`.
-
-Pivot (shape, style)s are recorded in `pivots.txt` and test (shape, style)s are in `test.txt`.
-Each of them is simulated in multiple poses and the results are in `pose/{shape}_{style}`.
-
    
 The dataset structure looks like this:
 ```
 DATA_DIR
 ----smpl
-----{garment_class}_{gender} (e.g., t-shirt_female)
+----<garment_class>_<gender> (e.g., t-shirt_female)
 --------pose
-------------{shape}_{style} (e.g., 000_023)
+------------<shape_idx>_<style_idx> (e.g., 000_023)
 --------shape
 --------style
 --------style_shape
 --------avail.txt
 --------pivots.txt
 --------test.txt
+--------style_model.npz
 ----apose.npy
 ----garment_class_info.pkl
 ----split_static_pose_shape.npz
 ```
-  
+
+- `split_static_pose_shape.npz` contains a dictionary `{'train': <train_idx>, 'test': <test_idx>}` where `<train_idx>` and `<test_idx>` are np arrays specifying the indices of poses which goes into train and test set respectively.
+- `garment_class_info.pkl` contains a dictionary `{<garment_class>: {'f': <f>, 'vert_indices': <vert_indices>} }` where `<vert_indices>` denotes the vertex indices of high resolution SMPL body template which defines the garment topology of `<garment_class>`, and `<f>` denotes the faces of template garment mesh.
+- `apose.npy` contains the thetas for A-pose on which garment style space is modeled.
+
+- For each `<garment_class>_<gender>`,
+  - `shape` directory contains uniformally chosen shape(beta) parameters.
+  - `style_model.npz` contains a dictionary with these variables: `<pca_w>`, `mean`, `coeff_mean`, `coeff_range`. For given style `gamma`, garment vertices can be obtained using the following equation:
+    - `pca_w * (gamma + coeff_mean) + mean`
+  - `style` directory contains uniformally chosen style(gamma) parameters.
+  - All styles are simulated on all shapes in A-pose and results are stored in `style_shape` directory. Out of those, shape_style pairs (also called pivots) with feasible simulation results are listed in `avail.txt`.
+  - `pivots.txt` lists those pivots which are chosen as per the algorithm described in subsection - Choosing K Style-Shape Prototypes - to simulate training data. `test.txt` lists additional pivots chosen to generate testing data.
+  - Each chosen pivot, denoted as `<shape_idx>_<style_idx>`, is simulated in few pose sequences. Simulation results are stored in `pose/<shape_idx>_<style_idx>` directory as unposed garment displacements. (Garment displacements are added on unposed template before applying standard SMPL skinning to get the final garment. See paper for details.)
+  - `pose/<shape_idx>_<style_idx>` also contains displacements for smoothed unposed garment.
 
 ## Visualize the dataset
 1. Install the renderer
