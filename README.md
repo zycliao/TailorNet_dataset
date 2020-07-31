@@ -3,6 +3,10 @@ This repository is a toolbox to process, visualize the dataset for "TailorNet: P
 
 [[model repository](https://github.com/chaitanya100100/TailorNet)][[arxiv](https://arxiv.org/abs/2003.04583)][[project website](https://virtualhumans.mpi-inf.mpg.de/tailornet/)][[YouTube](https://www.youtube.com/watch?v=F0O21a_fsBQ)]
 
+## Update
+2020/7/31   pants, shirt are available
+
+
 ## Requirements
 python3  
 pytorch  
@@ -22,7 +26,13 @@ cython
 [t-shirt_female](https://datasets.d2.mpi-inf.mpg.de/tailornet/t-shirt_female.zip)\(6.8G\)  
 [t-shirt_male](https://datasets.d2.mpi-inf.mpg.de/tailornet/t-shirt_male.zip)\(6.9G\)  
 [old-t-shirt_female](https://datasets.d2.mpi-inf.mpg.de/tailornet/old-t-shirt_female.zip)\(10G\)  
-[t-shirt_female_sample](https://datasets.d2.mpi-inf.mpg.de/tailornet/t-shirt_female_sample.zip)\(19M\)
+[t-shirt_female_sample](https://datasets.d2.mpi-inf.mpg.de/tailornet/t-shirt_female_sample.zip)\(19M\)  
+Other garment classes are available [here](https://nextcloud.mpi-klsb.mpg.de/index.php/s/dQCHykYo77EQYS8), including:  
+shirt_female(12.7G)  
+shirt_male(13.5G)  
+pant_female(3.3G)  
+pant_female(3.4G)  
+
 3. Specify the variable `DATA_DIR` in `global_var.py`  
 4. Unzip all downloaded files to `DATA_DIR`  
 
