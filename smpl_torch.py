@@ -154,6 +154,12 @@ class TorchSMPL4Garment(nn.Module):
         self.cur_device = None
         self.num_verts = 27554
 
+        # skirt_weight: n_skirt, n_body
+        skirt_weight = np.load(os.path.join(DATA_DIR, 'skirt_weight.npz'))['w']
+        self.register_buffer('skirt_weight', torch.from_numpy(skirt_weight).float())
+        skirt_skinning = skirt_weight @ np_weights
+        self.register_buffer('skirt_skinning', torch.from_numpy(skirt_skinning[None]).float())
+
     def save_obj(self, verts, obj_mesh_name):
         if self.faces is None:
             msg = 'obj not saveable!'
@@ -167,6 +173,8 @@ class TorchSMPL4Garment(nn.Module):
                 fp.write('f %d %d %d\n' % (f[0] + 1, f[1] + 1, f[2] + 1))
 
     def forward(self, theta, beta=None, garment_d=None, garment_class=None, rotate_base=False):
+        if garment_class == 'skirt':
+            return self.forward_skirt(theta, beta, garment_d, rotate_base)
         if not self.cur_device:
             device = theta.device
             self.cur_device = torch.device(device.type, device.index)
@@ -174,7 +182,6 @@ class TorchSMPL4Garment(nn.Module):
         num_batch = theta.shape[0]
 
         if beta is not None:
-            beta = beta[:, :self.num_betas]
             v_shaped = torch.matmul(beta, self.shapedirs).view(-1, self.size[0], self.size[1]) + self.v_template
         else:
             v_shaped = self.v_template.unsqueeze(0).expand(num_batch, -1, -1)
@@ -186,11 +193,6 @@ class TorchSMPL4Garment(nn.Module):
         Rs = batch_rodrigues(theta.contiguous().view(-1, 3)).view(-1, 24, 3, 3)
         pose_feature = (Rs[:, 1:, :, :]).sub(1.0, self.e3).view(-1, 207)
         v_posed = torch.matmul(pose_feature, self.posedirs).view(-1, self.size[0], self.size[1]) + v_shaped
-
-        # garment deformation
-        if garment_d is not None and garment_class is not None:
-            v_deformed = v_posed.clone()
-            v_deformed[:, self.class_info[garment_class]['vert_indices']] += garment_d
 
         self.J_transformed, A = batch_global_rigid_transformation(Rs, J, self.parents, self.cur_device, rotate_base=rotate_base)
 
@@ -201,38 +203,20 @@ class TorchSMPL4Garment(nn.Module):
         v_homo = torch.matmul(T, torch.unsqueeze(v_posed_homo, -1))
         v_body = v_homo[:, :, :3, 0]
 
-        if garment_class is not None:
+        if garment_class is not None and garment_d is not None:
+            vert_indices = self.class_info[garment_class]['vert_indices']
+            v_deformed = v_posed.clone()
+            v_deformed = v_deformed[:, vert_indices] + garment_d
             v_posed_homo = torch.cat([v_deformed, torch.ones(num_batch, v_deformed.shape[1], 1, device=self.cur_device)], dim=2)
-            v_homo = torch.matmul(T, torch.unsqueeze(v_posed_homo, -1))
+            v_homo = torch.matmul(T[:, vert_indices], torch.unsqueeze(v_posed_homo, -1))
             v_garment = v_homo[:, :, :3, 0]
-            return v_body, v_garment[:, self.class_info[garment_class]['vert_indices']]
+            return v_body, v_garment
         else:
             return v_body
 
-    def forward_poseshaped(self, theta, beta=None, garment_class=None):
-        if not self.cur_device:
-            device = theta.device
-            self.cur_device = torch.device(device.type, device.index)
-
-        num_batch = theta.shape[0]
-
-        if beta is not None:
-            v_shaped = torch.matmul(beta, self.shapedirs).view(-1, self.size[0], self.size[1]) + self.v_template
-        else:
-            v_shaped = self.v_template.unsqueeze(0).expand(num_batch, -1, -1)
-        Jx = torch.matmul(v_shaped[:, :, 0], self.J_regressor)
-        Jy = torch.matmul(v_shaped[:, :, 1], self.J_regressor)
-        Jz = torch.matmul(v_shaped[:, :, 2], self.J_regressor)
-        J = torch.stack([Jx, Jy, Jz], dim=2)
-
-        Rs = batch_rodrigues(theta.contiguous().view(-1, 3)).view(-1, 24, 3, 3)
-        pose_feature = (Rs[:, 1:, :, :]).sub(1.0, self.e3).view(-1, 207)
-        v_posed = torch.matmul(pose_feature, self.posedirs).view(-1, self.size[0], self.size[1]) + v_shaped
-        if garment_class is not None:
-            v_posed = v_posed[:, self.class_info[garment_class]['vert_indices']]
-        return v_posed
-
     def forward_unpose_deformation(self, theta, beta=None, verts=None, garment_class=None, rotate_base=False):
+        if garment_class == 'skirt':
+            return self.forward_unpose_skirt(theta, beta, verts, rotate_base)
         if not self.cur_device:
             device = theta.device
             self.cur_device = torch.device(device.type, device.index)
@@ -263,14 +247,13 @@ class TorchSMPL4Garment(nn.Module):
         indices = self.class_info[garment_class]['vert_indices'].to(self.cur_device)
         if garment_class != None:
             Tinv = Tinv[:,  indices]
-            v_posed = v_posed[:, indices ]
+            v_posed = v_posed[:, indices]
 
         verts_homo = torch.cat([verts, torch.ones(num_batch, verts.shape[1], 1, device=self.cur_device)], dim=2)
         v_def = torch.matmul(Tinv, verts_homo.unsqueeze(-1))[:, :, :3, 0] - v_posed
         return v_def
 
-
-    def forward_return_all(self, theta, beta=None, garment_d=None, garment_class=None, rotate_base=False):
+    def forward_skirt(self, theta, beta, garment_d, rotate_base):
         if not self.cur_device:
             device = theta.device
             self.cur_device = torch.device(device.type, device.index)
@@ -290,12 +273,8 @@ class TorchSMPL4Garment(nn.Module):
         pose_feature = (Rs[:, 1:, :, :]).sub(1.0, self.e3).view(-1, 207)
         v_posed = torch.matmul(pose_feature, self.posedirs).view(-1, self.size[0], self.size[1]) + v_shaped
 
-        # garment deformation
-        if garment_d is not None and garment_class is not None:
-            v_deformed = v_posed.clone()
-            v_deformed[:, self.class_info[garment_class]['vert_indices']] += garment_d
-
-        self.J_transformed, A = batch_global_rigid_transformation(Rs, J, self.parents, self.cur_device, rotate_base=rotate_base)
+        self.J_transformed, A = batch_global_rigid_transformation(Rs, J, self.parents, self.cur_device,
+                                                                  rotate_base=rotate_base)
 
         W = self.weight.view(1, self.num_verts, 24).repeat(num_batch, 1, 1)
         T = torch.matmul(W, A.view(num_batch, 24, 16)).view(num_batch, -1, 4, 4)
@@ -304,26 +283,51 @@ class TorchSMPL4Garment(nn.Module):
         v_homo = torch.matmul(T, torch.unsqueeze(v_posed_homo, -1))
         v_body = v_homo[:, :, :3, 0]
 
-        if garment_class is not None:
-            v_posed_homo = torch.cat([v_deformed, torch.ones(num_batch, v_deformed.shape[1], 1, device=self.cur_device)], dim=2)
-            v_homo = torch.matmul(T, torch.unsqueeze(v_posed_homo, -1))
-            v_garment = v_homo[:, :, :3, 0]
-            return v_body, v_garment[:, self.class_info[garment_class]['vert_indices']], T, v_posed
+        skirt_W = self.skirt_skinning.repeat(num_batch, 1, 1)
+        skirt_T = torch.matmul(skirt_W, A.view(num_batch, 24, 16)).view(num_batch, -1, 4, 4)
+
+        v_deformed = v_posed.clone()
+        v_skirt = torch.einsum('sb,nbt->nst', self.skirt_weight, v_deformed)
+        v_skirt = v_skirt + garment_d
+        v_skirt_homo = torch.cat([v_skirt, torch.ones(num_batch, v_skirt.shape[1], 1, device=self.cur_device)], dim=2)
+        v_skirt = torch.matmul(skirt_T, torch.unsqueeze(v_skirt_homo, -1))
+        v_skirt = v_skirt[:, :, :3, 0]
+        return v_body, v_skirt
+
+    def forward_unpose_skirt(self, theta, beta, verts, rotate_base):
+        if not self.cur_device:
+            device = theta.device
+            self.cur_device = torch.device(device.type, device.index)
+
+        num_batch = theta.shape[0]
+
+        if beta is not None:
+            v_shaped = torch.matmul(beta, self.shapedirs).view(-1, self.size[0], self.size[1]) + self.v_template
         else:
-            raise NotImplementedError
+            v_shaped = self.v_template.unsqueeze(0).expand(num_batch, -1, -1)
+        Jx = torch.matmul(v_shaped[:, :, 0], self.J_regressor)
+        Jy = torch.matmul(v_shaped[:, :, 1], self.J_regressor)
+        Jz = torch.matmul(v_shaped[:, :, 2], self.J_regressor)
+        J = torch.stack([Jx, Jy, Jz], dim=2)
 
+        Rs = batch_rodrigues(theta.contiguous().view(-1, 3)).view(-1, 24, 3, 3)
+        pose_feature = (Rs[:, 1:, :, :]).sub(1.0, self.e3).view(-1, 207)
+        v_posed = torch.matmul(pose_feature, self.posedirs).view(-1, self.size[0], self.size[1]) + v_shaped
 
-    def unpose_fast(self, verts, T, v_posed, garment_class=None):
-        # TODO: this is not working with GPU, find out why
-        Tinv = torch.inverse(T)
+        self.J_transformed, A = batch_global_rigid_transformation(Rs, J, self.parents, self.cur_device, rotate_base=rotate_base)
 
-        if garment_class != None:
-            indices = self.class_info[garment_class]['vert_indices']
-            Tinv = Tinv[:,  indices]
-            v_posed = v_posed[:, indices ]
+        W = self.weight.view(1, self.num_verts, 24).repeat(num_batch, 1, 1)
+        T = torch.matmul(W, A.view(num_batch, 24, 16)).view(num_batch, -1, 4, 4)
 
-        verts_homo = torch.cat([verts, torch.ones(verts.shape[0], verts.shape[1], 1, device=verts.device)], dim=2)
-        v_def = torch.matmul(Tinv, verts_homo.unsqueeze(-1))[:, :, :3, 0] - v_posed
+        skirt_W = self.skirt_skinning.repeat(num_batch, 1, 1)
+        skirt_T = torch.matmul(skirt_W, A.view(num_batch, 24, 16)).view(num_batch, -1, 4, 4)
+
+        skirt_Tinv = torch.inverse(skirt_T)
+        v_deformed = v_posed.clone()
+        v_skirt = torch.einsum('sb,nbt->nst', self.skirt_weight, v_deformed)
+
+        verts_homo = torch.cat([verts, torch.ones(num_batch, verts.shape[1], 1, device=self.cur_device)], dim=2)
+        v_def = torch.matmul(skirt_Tinv, verts_homo.unsqueeze(-1))[:, :, :3, 0] - v_skirt
         return v_def
 
 import sys

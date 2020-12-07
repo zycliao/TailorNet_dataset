@@ -4,6 +4,7 @@ This repository is a toolbox to process, visualize the dataset for "TailorNet: P
 [[model repository](https://github.com/chaitanya100100/TailorNet)][[arxiv](https://arxiv.org/abs/2003.04583)][[project website](https://virtualhumans.mpi-inf.mpg.de/tailornet/)][[YouTube](https://www.youtube.com/watch?v=F0O21a_fsBQ)]
 
 ## Update
+2020/12/7   short pants, skirt are available  
 2020/7/31   pants, shirt are available
 
 
@@ -20,24 +21,27 @@ cython
 3. Run `smpl_lib/convert_smpl_models.py`  
 
 ## Data preparation
-1. Download meta data of the dataset  
-[dataset_meta](https://datasets.d2.mpi-inf.mpg.de/tailornet/dataset_meta.zip)
+All data is available [here](https://nextcloud.mpi-klsb.mpg.de/index.php/s/dQCHykYo77EQYS8)
+1. Download meta data (dataset_meta.zip) of the dataset  
+
 2. Download one or more sub-dataset (other garment classes are coming soon)   
-[t-shirt_female](https://datasets.d2.mpi-inf.mpg.de/tailornet/t-shirt_female.zip)\(6.8G\)  
-[t-shirt_male](https://datasets.d2.mpi-inf.mpg.de/tailornet/t-shirt_male.zip)\(6.9G\)  
-[old-t-shirt_female](https://datasets.d2.mpi-inf.mpg.de/tailornet/old-t-shirt_female.zip)\(10G\)  
-[t-shirt_female_sample](https://datasets.d2.mpi-inf.mpg.de/tailornet/t-shirt_female_sample.zip)\(19M\)  
-Other garment classes are available [here](https://nextcloud.mpi-klsb.mpg.de/index.php/s/dQCHykYo77EQYS8), including:  
+t-shirt_female(6.9G)  
+t-shirt_male(7.2G)  
+old-t-shirt_female(10G)  
+t-shirt_female_sample(19M)  
 shirt_female(12.7G)  
 shirt_male(13.5G)  
 pant_female(3.3G)  
-pant_female(3.4G)  
+pant_male(3.4G)  
+short-pant_female(1.9G)  
+short-pant_male(2G)  
+skirt_female(5G)
 
 3. Specify the variable `DATA_DIR` in `global_var.py`  
 4. Unzip all downloaded files to `DATA_DIR`  
 
 ## Dataset Description
-Currently, we have 5 garment classes (t-shirt, shirt, pant, skirt, old-t-shirt). 
+Currently, we have 6 garment classes (t-shirt, shirt, pant, skirt, short-pant, old-t-shirt). 
 In TailorNet paper, we trained and tested our model using `old-t-shirt`. 
 Compared to `old-t-shirt`, `t-shirt` has a different topology, higher quality and larger style variation. 
 Use `old-t-shirt` if you want a fair comparison with the results in our paper.  
@@ -90,12 +94,32 @@ python setup.py build_ext -i
 python visualize_dataset.py
 ```
 
+## Count the dataset
+```
+python count_data.py
+——————————————————————————————————————————————————————————————————————————————
+|          |          |    train style_shape|     test style_shape|          |
+|     class|    gender|train pose| test pose|train pose| test pose|     total|
+——————————————————————————————————————————————————————————————————————————————
+|   t-shirt|    female|     14589|      3309|       776|       224|     18898|
+|   t-shirt|      male|     14397|      3353|       815|       185|     18750|
+|     shirt|    female|     14553|      3342|       856|       144|     18895|
+|     shirt|      male|     14322|      3328|       831|       169|     18650|
+|      pant|    female|     14569|      3430|       805|       195|     18999|
+|      pant|      male|     14562|      3423|       793|       203|     18981|
+|short-pant|    female|     14546|      3451|       804|       196|     18997|
+|short-pant|      male|     14563|      3426|       796|       203|     18988|
+|     skirt|    female|     14554|      3444|       803|       197|     18998|
+|                total|    130655|     30506|      7279|      1716|    170156|
+——————————————————————————————————————————————————————————————————————————————
+```
+
 ## TODO
 - [ ] Dataset generation codes
 - [ ] Style space visualizer
 - [ ] Blender visualizer
 - [ ] Google Drive/BaiduYun
-- [ ] Shirt, pants, skirt
+- [x] Shirt, pants, skirt
 - [x] T-shirt
 - [x] Basic visualizer
 
