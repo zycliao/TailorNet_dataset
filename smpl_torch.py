@@ -5,7 +5,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
-from global_var import DATA_DIR
+from global_var import ROOT
 
 def batch_rodrigues(theta):
     # theta N x 3
@@ -105,8 +105,8 @@ class TorchSMPL4Garment(nn.Module):
 
         # with open(model_path, 'rb') as reader:
         #     model = pickle.load(reader, encoding='iso-8859-1')
-        model = np.load(os.path.join(DATA_DIR, 'smpl/smpl_hres_{}.npz'.format(gender)))
-        with open(os.path.join(DATA_DIR, 'garment_class_info.pkl'), 'rb') as f:
+        model = np.load(os.path.join(ROOT, 'smpl/smpl_hres_{}.npz'.format(gender)))
+        with open(os.path.join(ROOT, 'garment_class_info.pkl'), 'rb') as f:
             class_info = pickle.load(f, encoding='latin-1')
         for k in class_info.keys():
             if isinstance(class_info[k]['vert_indices'], np.ndarray):
@@ -155,7 +155,7 @@ class TorchSMPL4Garment(nn.Module):
         self.num_verts = 27554
 
         # skirt_weight: n_skirt, n_body
-        skirt_weight = np.load(os.path.join(DATA_DIR, 'skirt_weight.npz'))['w']
+        skirt_weight = np.load(os.path.join(ROOT, 'skirt_weight.npz'))['w']
         self.register_buffer('skirt_weight', torch.from_numpy(skirt_weight).float())
         skirt_skinning = skirt_weight @ np_weights
         self.register_buffer('skirt_skinning', torch.from_numpy(skirt_skinning[None]).float())
@@ -337,12 +337,12 @@ class SMPL_Lres(nn.Module):
 
         # with open(model_path, 'rb') as reader:
         #     model = pickle.load(reader, encoding='iso-8859-1')
-        model = np.load(os.path.join(DATA_DIR, 'smpl/smpl_{}.npz'.format(gender)))
+        model = np.load(os.path.join(ROOT, 'smpl/smpl_{}.npz'.format(gender)))
         if sys.version_info.major == 3:
-            with open(os.path.join(DATA_DIR, 'garment_class_info.pkl'), 'rb') as f:
+            with open(os.path.join(ROOT, 'garment_class_info.pkl'), 'rb') as f:
                 class_info = pickle.load(f, encoding='latin-1')
         else:
-            with open(os.path.join(DATA_DIR, 'garment_class_info_py2.pkl'), 'rb') as f:
+            with open(os.path.join(ROOT, 'garment_class_info_py2.pkl'), 'rb') as f:
                 class_info = pickle.load(f)
         for k in class_info.keys():
             if isinstance(class_info[k]['vert_indices'], np.ndarray):

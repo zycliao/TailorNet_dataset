@@ -1,7 +1,7 @@
 import os
 import os.path as osp
 import numpy as np
-from global_var import DATA_DIR
+from global_var import ROOT
 
 
 if __name__ == '__main__':
@@ -10,7 +10,7 @@ if __name__ == '__main__':
     splits = ['train', 'test']
     img_size = 512
 
-    split_idx = np.load(osp.join(DATA_DIR, 'split_static_pose_shape.npz'))
+    split_idx = np.load(osp.join(ROOT, 'split_static_pose_shape.npz'))
     train_idx = split_idx['train']
     test_idx = split_idx['test']
 
@@ -32,11 +32,11 @@ if __name__ == '__main__':
             print("{:>10}|".format(gender), end='')
             count_one_class = 0
             for split in splits:
-                pose_dir = osp.join(DATA_DIR, '{}_{}'.format(garment_class, gender), 'pose')
+                pose_dir = osp.join(ROOT, '{}_{}'.format(garment_class, gender), 'pose')
                 if split == 'train':
-                    ss_path = osp.join(DATA_DIR, '{}_{}'.format(garment_class, gender), 'pivots.txt')
+                    ss_path = osp.join(ROOT, '{}_{}'.format(garment_class, gender), 'pivots.txt')
                 else:
-                    ss_path = osp.join(DATA_DIR, '{}_{}'.format(garment_class, gender), 'test.txt')
+                    ss_path = osp.join(ROOT, '{}_{}'.format(garment_class, gender), 'test.txt')
                 with open(ss_path) as f:
                     all_ss = f.read().strip().splitlines()
                 train_num = 0

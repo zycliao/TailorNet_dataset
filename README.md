@@ -4,6 +4,7 @@ This repository is a toolbox to process, visualize the dataset for "TailorNet: P
 [[model repository](https://github.com/chaitanya100100/TailorNet)][[arxiv](https://arxiv.org/abs/2003.04583)][[project website](https://virtualhumans.mpi-inf.mpg.de/tailornet/)][[YouTube](https://www.youtube.com/watch?v=F0O21a_fsBQ)]
 
 ## Update
+2021/1/7    data generation codes  
 2020/12/7   short pants, skirt are available  
 2020/7/31   pants, shirt are available
 
@@ -86,13 +87,29 @@ We provide `apose.npy`, `garment_class_info.pkl` and `split_static_pose_shape.np
 ## Visualize the dataset
 1. Install the renderer
 ```
-cd render_lib
+cd utils/render_lib
 python setup.py build_ext -i
 ```
 2. Run the visualizer
 ```
 python visualize_dataset.py
 ```
+
+## Dataset Generation
+Please check readme.md in each directory for detail  
+1. style_pca  
+Scripts that process garment registrations and model the garment style space.  
+2. simulation_style  
+Simulate all (style, shape) combinations in A-pose.  
+3. pivots  
+Generate pivots and test set.  
+4. simulation_pose  
+Simulate different poses for pivots and test (style, shape).  
+
+Since our raw data is not public and simulation in Marvelous Designer cannot be scripted,
+these codes are only for reference. If you want to simulate your own data, 
+make sure you understand most code and the paper, 
+so that you can modify parameters that are highly dependent of the data.
 
 ## Count the dataset
 ```
@@ -115,10 +132,9 @@ python count_data.py
 ```
 
 ## TODO
-- [ ] Dataset generation codes
-- [ ] Style space visualizer
+- [x] Dataset generation codes
+- [x] Style space visualizer
 - [ ] Blender visualizer
-- [ ] Google Drive/BaiduYun
 - [x] Shirt, pants, skirt
 - [x] T-shirt
 - [x] Basic visualizer

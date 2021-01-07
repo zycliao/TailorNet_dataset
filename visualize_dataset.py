@@ -3,9 +3,9 @@ import os.path as osp
 import cv2
 import numpy as np
 import pickle
-from renderer import Renderer
+from utils.renderer import Renderer
 from smpl_torch import SMPLNP
-from global_var import DATA_DIR
+from global_var import ROOT
 
 
 if __name__ == '__main__':
@@ -15,17 +15,17 @@ if __name__ == '__main__':
     renderer = Renderer(img_size)
     smpl = SMPLNP(gender=gender, cuda=False)
 
-    pose_dir = osp.join(DATA_DIR, '{}_{}'.format(garment_class, gender), 'pose')
-    shape_dir = osp.join(DATA_DIR, '{}_{}'.format(garment_class, gender), 'shape')
-    ss_dir = osp.join(DATA_DIR, '{}_{}'.format(garment_class, gender), 'style_shape')
-    pose_vis_dir = osp.join(DATA_DIR, '{}_{}'.format(garment_class, gender), 'pose_vis')
-    ss_vis_dir = osp.join(DATA_DIR, '{}_{}'.format(garment_class, gender), 'style_shape_vis')
-    pivots_path = osp.join(DATA_DIR, '{}_{}'.format(garment_class, gender), 'pivots.txt')
-    avail_path = osp.join(DATA_DIR, '{}_{}'.format(garment_class, gender), 'avail.txt')
+    pose_dir = osp.join(ROOT, '{}_{}'.format(garment_class, gender), 'pose')
+    shape_dir = osp.join(ROOT, '{}_{}'.format(garment_class, gender), 'shape')
+    ss_dir = osp.join(ROOT, '{}_{}'.format(garment_class, gender), 'style_shape')
+    pose_vis_dir = osp.join(ROOT, '{}_{}'.format(garment_class, gender), 'pose_vis')
+    ss_vis_dir = osp.join(ROOT, '{}_{}'.format(garment_class, gender), 'style_shape_vis')
+    pivots_path = osp.join(ROOT, '{}_{}'.format(garment_class, gender), 'pivots.txt')
+    avail_path = osp.join(ROOT, '{}_{}'.format(garment_class, gender), 'avail.txt')
     os.makedirs(pose_vis_dir, exist_ok=True)
     os.makedirs(ss_vis_dir, exist_ok=True)
 
-    with open(os.path.join(DATA_DIR, 'garment_class_info.pkl'), 'rb') as f:
+    with open(os.path.join(ROOT, 'garment_class_info.pkl'), 'rb') as f:
         class_info = pickle.load(f, encoding='latin-1')
     body_f = smpl.base.faces
     garment_f = class_info[garment_class]['f']
@@ -66,7 +66,7 @@ if __name__ == '__main__':
     # 2. Visualize all style_shape in canonical pose
     with open(avail_path) as f:
         all_ss = f.read().strip().splitlines()
-    apose = np.load(osp.join(DATA_DIR, 'apose.npy'))
+    apose = np.load(osp.join(ROOT, 'apose.npy'))
     for ss in all_ss:
         beta_str, gamma_str = ss.split('_')
         unpose_path = osp.join(ss_dir, 'beta{}_gamma{}.npy'.format(beta_str, gamma_str))

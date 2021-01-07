@@ -13,7 +13,7 @@ Mail: yaofeng1995@gmail.com
 import numpy as np
 from time import time
 
-from render_lib import mesh_core_cython
+from utils.render_lib import mesh_core_cython
 import math
 from math import cos, sin
 

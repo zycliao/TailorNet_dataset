@@ -20,7 +20,7 @@ if __name__ == '__main__':
     genders = ['male', 'female']
     keys = ['f', 'v_template', 'shapedirs', 'J_regressor', 'posedirs',
             'kintree_table', 'weights', 'J']
-    SAVE_DIR = os.path.join(global_var.DATA_DIR, 'smpl')
+    SAVE_DIR = os.path.join(global_var.ROOT, 'smpl')
     if not os.path.exists(SAVE_DIR):
         os.makedirs(SAVE_DIR)
     for gender in genders:
