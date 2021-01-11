@@ -18,7 +18,7 @@ cython
 
 ## SMPL model
 1. Register and download SMPL models [here](https://smpl.is.tue.mpg.de/en)  
-2. Unzip `SMPL_python_v.1.0.0.zip` and put `smpl/models/*.pkl` in `DATA_DIR/smpl`(specify `DATA_DIR` in `global_var.py`)   
+2. Unzip `SMPL_python_v.1.0.0.zip` and put `smpl/models/*.pkl` in `ROOT/smpl`(specify `ROOT` in `global_var.py`)   
 3. Run `smpl_lib/convert_smpl_models.py`  
 
 ## Data preparation
@@ -38,8 +38,8 @@ short-pant_female(1.9G)
 short-pant_male(2G)  
 skirt_female(5G)
 
-3. Specify the variable `DATA_DIR` in `global_var.py`  
-4. Unzip all downloaded files to `DATA_DIR`  
+3. Specify the variable `ROOT` in `global_var.py`  
+4. Unzip all downloaded files to `ROOT`  
 
 ## Dataset Description
 Currently, we have 6 garment classes (t-shirt, shirt, pant, skirt, short-pant, old-t-shirt). 
@@ -49,7 +49,7 @@ Use `old-t-shirt` if you want a fair comparison with the results in our paper.
    
 The dataset structure looks like this:
 ```
-DATA_DIR
+ROOT
 ----smpl
 ----apose.npy
 ----garment_class_info.pkl
@@ -96,7 +96,7 @@ python visualize_dataset.py
 ```
 
 ## Dataset Generation
-Please check readme.md in each directory for detail  
+Download datagen_assets.zip and unzip it to `ROOT`. Please check readme.md in each directory for detail  
 1. style_pca  
 Scripts that process garment registrations and model the garment style space.  
 2. simulation_style  
