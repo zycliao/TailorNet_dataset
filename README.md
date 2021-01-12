@@ -22,7 +22,7 @@ cython
 3. Run `smpl_lib/convert_smpl_models.py`  
 
 ## Data preparation
-All data is available [here](https://nextcloud.mpi-klsb.mpg.de/index.php/s/dQCHykYo77EQYS8)
+All data is available [here](https://nextcloud.mpi-klsb.mpg.de/index.php/s/W7a57iXRG9Yms6P)
 1. Download meta data (dataset_meta.zip) of the dataset  
 
 2. Download one or more sub-dataset (other garment classes are coming soon)   
