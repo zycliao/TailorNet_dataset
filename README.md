@@ -4,6 +4,7 @@ This repository is a toolbox to process, visualize the dataset for "TailorNet: P
 [[model repository](https://github.com/chaitanya100100/TailorNet)][[arxiv](https://arxiv.org/abs/2003.04583)][[project website](https://virtualhumans.mpi-inf.mpg.de/tailornet/)][[YouTube](https://www.youtube.com/watch?v=F0O21a_fsBQ)]
 
 ## Update
+2021/2/2    dataset uploaded to Baidu Drive  
 2021/1/7    data generation codes  
 2020/12/7   short pants, skirt are available  
 2020/7/31   pants, shirt are available
@@ -22,7 +23,9 @@ cython
 3. Run `smpl_lib/convert_smpl_models.py`  
 
 ## Data preparation
-All data is available [here](https://nextcloud.mpi-klsb.mpg.de/index.php/s/W7a57iXRG9Yms6P)
+All data is available in the following links:  
+[Data](https://nextcloud.mpi-klsb.mpg.de/index.php/s/W7a57iXRG9Yms6P) or  
+[Baidu Drive](https://pan.baidu.com/s/14roMijl36ruppRNd3tNC2g)(password：TLNT)  
 1. Download meta data (dataset_meta.zip) of the dataset  
 
 2. Download one or more sub-dataset (other garment classes are coming soon)   
