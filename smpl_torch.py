@@ -182,6 +182,7 @@ class TorchSMPL4Garment(nn.Module):
         num_batch = theta.shape[0]
 
         if beta is not None:
+            beta = beta[:, :self.num_betas]
             v_shaped = torch.matmul(beta, self.shapedirs).view(-1, self.size[0], self.size[1]) + self.v_template
         else:
             v_shaped = self.v_template.unsqueeze(0).expand(num_batch, -1, -1)
@@ -224,6 +225,7 @@ class TorchSMPL4Garment(nn.Module):
         num_batch = theta.shape[0]
 
         if beta is not None:
+            beta = beta[:, :self.num_betas]
             v_shaped = torch.matmul(beta, self.shapedirs).view(-1, self.size[0], self.size[1]) + self.v_template
         else:
             v_shaped = self.v_template.unsqueeze(0).expand(num_batch, -1, -1)
@@ -261,6 +263,7 @@ class TorchSMPL4Garment(nn.Module):
         num_batch = theta.shape[0]
 
         if beta is not None:
+            beta = beta[:, :self.num_betas]
             v_shaped = torch.matmul(beta, self.shapedirs).view(-1, self.size[0], self.size[1]) + self.v_template
         else:
             v_shaped = self.v_template.unsqueeze(0).expand(num_batch, -1, -1)
@@ -302,6 +305,7 @@ class TorchSMPL4Garment(nn.Module):
         num_batch = theta.shape[0]
 
         if beta is not None:
+            beta = beta[:, :self.num_betas]
             v_shaped = torch.matmul(beta, self.shapedirs).view(-1, self.size[0], self.size[1]) + self.v_template
         else:
             v_shaped = self.v_template.unsqueeze(0).expand(num_batch, -1, -1)
