@@ -87,6 +87,9 @@ We provide `apose.npy`, `garment_class_info.pkl` and `split_static_pose_shape.np
   - Each chosen pivot, denoted as `<shape_idx>_<style_idx>`, is simulated in few pose sequences. Simulation results are stored in `pose/<shape_idx>_<style_idx>` directory as unposed garment displacements. (Garment displacements are added on unposed template before applying standard SMPL skinning to get the final garment. See paper for details.)
   - `pose/<shape_idx>_<style_idx>` also contains displacements for smoothed unposed garment.
 
+## Usage
+If you want to convert the data to the mesh format (e.g., .obj), please check Line 44 to Line 64 in `visualize_dataset.py`. This code converts the TailorNet data sequences into meshes (gar_v, gar_f are vertices and faces of the garment) and renders them.  
+
 ## Visualize the dataset
 1. Install the renderer
 ```
