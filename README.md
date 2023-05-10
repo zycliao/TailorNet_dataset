@@ -18,7 +18,7 @@ opencv-python
 cython  
 
 ## SMPL model
-1. Register and download SMPL models [here](https://smpl.is.tue.mpg.de/en)  
+1. Register and download SMPL models [here](https://smpl.is.tue.mpg.de)  
 2. Unzip `SMPL_python_v.1.0.0.zip` and put `smpl/models/*.pkl` in `ROOT/smpl`(specify `ROOT` in `global_var.py`)   
 3. Run `smpl_lib/convert_smpl_models.py`  
 
