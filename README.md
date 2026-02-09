@@ -24,7 +24,7 @@ cython
 
 ## Data preparation
 All data is available in the following links:  
-[Data](https://nextcloud.mpi-klsb.mpg.de/index.php/s/W7a57iXRG9Yms6P) or  
+[Huggingface](https://huggingface.co/datasets/zycliao/TailorNet_dataset/tree/main) or  
 [Baidu Drive](https://pan.baidu.com/s/14roMijl36ruppRNd3tNC2g)(password：TLNT)  
 1. Download meta data (dataset_meta.zip) of the dataset  
 
